@@ -1,0 +1,14 @@
+{
+  "name": "nu-in-numele-meu-site",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Bilingual static campaign site for O.G. 85/2004 reform.",
+  "scripts": {
+    "build": "node build/build.mjs",
+    "preview": "python3 -m http.server 4321 -d dist"
+  },
+  "dependencies": {
+    "@resvg/resvg-js": "^2.6.2"
+  }
+}

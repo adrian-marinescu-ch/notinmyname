@@ -1,0 +1,31 @@
+services:
+  dist-export:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dist-export
+      args:
+        SITE_URL: ${SITE_URL:-}
+        GA_MEASUREMENT_ID: ${GA_MEASUREMENT_ID:-}
+        BASE_PATH: ${BASE_PATH:-}
+        SIGN_URL: ${SIGN_URL:-}
+    volumes:
+      - ./dist:/output
+
+  preview:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: preview
+      args:
+        SITE_URL: ${SITE_URL:-}
+        GA_MEASUREMENT_ID: ${GA_MEASUREMENT_ID:-}
+        BASE_PATH: ${BASE_PATH:-}
+        SIGN_URL: ${SIGN_URL:-}
+    depends_on:
+      dist-export:
+        condition: service_completed_successfully
+    ports:
+      - "4321:80"
+    volumes:
+      - ./dist:/usr/share/nginx/html:ro

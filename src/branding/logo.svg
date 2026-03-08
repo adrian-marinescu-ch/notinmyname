@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="none" role="img" aria-labelledby="logoTitle logoDesc">
+  <title id="logoTitle">Nu in numele meu logo</title>
+  <desc id="logoDesc">Identity card and shield icon with a verification check.</desc>
+  <defs>
+    <linearGradient id="bg" x1="32" y1="20" x2="224" y2="236" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#10233a"/>
+      <stop offset="1" stop-color="#081425"/>
+    </linearGradient>
+    <linearGradient id="stroke" x1="40" y1="44" x2="222" y2="210" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#63D3FF"/>
+      <stop offset="1" stop-color="#7EF2C8"/>
+    </linearGradient>
+    <linearGradient id="shield" x1="142" y1="144" x2="209" y2="210" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#65D8FF"/>
+      <stop offset="1" stop-color="#6EF2BC"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="16" y="16" width="224" height="224" rx="58" fill="url(#bg)"/>
+  <rect x="28" y="28" width="200" height="200" rx="48" stroke="url(#stroke)" stroke-width="3" opacity="0.42"/>
+
+  <rect x="46" y="60" width="164" height="116" rx="26" stroke="url(#stroke)" stroke-width="8"/>
+  <rect x="66" y="84" width="74" height="68" rx="12" fill="#0E1A2C" stroke="#DDE9FA" stroke-width="4"/>
+  <circle cx="88" cy="107" r="10" stroke="#DDE9FA" stroke-width="4"/>
+  <path d="M72 136c7-12 26-12 33 0" stroke="#DDE9FA" stroke-width="4" stroke-linecap="round"/>
+
+  <path d="M152 94h36M152 110h28M152 126h32" stroke="#DDE9FA" stroke-width="6" stroke-linecap="round"/>
+
+  <path d="M176 138l30 14v25c0 18-13 32-30 37-17-5-30-19-30-37v-25l30-14Z" fill="url(#shield)"/>
+  <path d="m163 172 10 10 18-23" stroke="#0A1930" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
