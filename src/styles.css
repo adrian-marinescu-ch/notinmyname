@@ -511,7 +511,7 @@ select.input{cursor:pointer}
   background:rgba(99,211,255,.14)
 }
 .a11y-hub-floating{
-  position:fixed;right:1rem;bottom:1rem;z-index:221;display:none
+  position:fixed;right:1rem;bottom:1rem;z-index:221;display:grid
 }
 html[data-theme="light"] .site-header{
   border-bottom-color:rgba(22,48,84,.11);
@@ -584,7 +584,6 @@ html[data-theme="light"] .consent-panel{background:rgba(31,52,80,.22)}
   .hero-grid,.complaints-grid,.footer-grid{grid-template-columns:1fr 1fr}
   .consent-banner{left:1rem;right:1rem;bottom:1rem}
   .consent-panel{place-items:center}
-  .a11y-hub-floating{display:grid}
   .card-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .timeline{grid-template-columns:repeat(2,minmax(0,1fr))}
   .comparison{grid-template-columns:repeat(2,minmax(0,1fr))}
