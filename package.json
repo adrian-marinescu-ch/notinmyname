@@ -6,9 +6,13 @@
   "description": "Bilingual static campaign site for O.G. 85/2004 reform.",
   "scripts": {
     "build": "node build/build.mjs",
-    "preview": "python3 -m http.server 4321 -d dist"
+    "preview": "wrangler dev",
+    "deploy": "wrangler deploy"
   },
   "dependencies": {
     "@resvg/resvg-js": "^2.6.2"
+  },
+  "devDependencies": {
+    "wrangler": "^4.71.0"
   }
 }
