@@ -7,11 +7,16 @@ export const site = {
   siteUrl: process.env.SITE_URL || "",
   gaMeasurementId: process.env.GA_MEASUREMENT_ID || "",
   basePath: process.env.BASE_PATH || "",
-  signUrl: process.env.SIGN_URL || "",
+  signUrl: (process.env.SIGN_URL || "").trim(),
+  signProvider: (process.env.SIGN_PROVIDER || "").trim(),
+  sourceCodeUrl: (process.env.SOURCE_CODE_URL || "").trim(),
+  sourceCodePlatform: (process.env.SOURCE_CODE_PLATFORM || "").trim(),
   defaultLocale: "ro",
   locales: ["ro", "en"],
   themeColor: "#08111d",
 };
+const hasSignerProviderConfig = Boolean(site.signUrl && site.signProvider);
+const hasSourceCodeConfig = Boolean(site.sourceCodeUrl && site.sourceCodePlatform);
 
 const toGoogleTranslateEn = (url) =>
   `https://translate.google.com/translate?sl=ro&tl=en&u=${encodeURIComponent(url)}`;
@@ -79,6 +84,12 @@ export const content = {
       lead: "Campanie civică pentru protecția oamenilor afectați de credite făcute cu date furate.",
       note: "Pentru protecția datelor personale, documentul semnat complet nu este publicat pe site. Când distribui campania, trimite linkul site-ului sau un PDF în care datele personale sunt ascunse.",
       legal: "Conținut informativ și de advocacy. Nu constituie consultanță juridică individuală.",
+      sourceCode: hasSourceCodeConfig
+        ? {
+          intro: "Pentru transparență, codul sursă este disponibil pe",
+          linkLabel: site.sourceCodePlatform
+        }
+        : null,
       linksLabel: "Pagini",
       links: [
         { label: "Acasă", route: "home" },
@@ -486,6 +497,14 @@ export const content = {
           text: "Cerințele devin simple, verificabile și ușor de controlat."
         }
       ],
+      sign: hasSignerProviderConfig
+        ? {
+          title: `Semnează petiția pe platforma ${site.signProvider}`,
+          intro: `Nu controlam colectarea date personale pe acest site. Pentru semnare, folosește pagina oficială a campaniei ${site.signProvider}.`,
+          cta: `Semnează pe platforma ${site.signProvider}`,
+          linkLabel: "Deschide pagina de semnare"
+        }
+        : null,
       privacyNote: "Pe site este publicată doar varianta fără date personale. Dacă trimiți un PDF, ascunde mai întâi datele sensibile."
     },
     resources: {
@@ -654,6 +673,15 @@ export const content = {
           ]
         }
       ],
+      signProviderNotice: hasSignerProviderConfig
+        ? {
+          title: `Platforma de semnare ${site.signProvider}`,
+          items: [
+            `Când accesezi pagina externă a platformei ${site.signProvider} pentru semnare, cookie-urile și tehnologiile similare de acolo sunt controlate de platforma ${site.signProvider}, nu de acest site.`,
+            `Politica noastră de confidențialitate acoperă doar acest site. Pentru detalii despre cookie-uri, consimțământ și urmărire pe pagina de semnare, verifică politicile platformei ${site.signProvider}.`
+          ]
+        }
+        : null,
       gaSection: {
         title: "Google Analytics (opțional)",
         items: [
@@ -696,6 +724,12 @@ export const content = {
       lead: "Civic campaign to update the legal framework governing remote loans and identity fraud.",
       note: "To protect personal data, we do not publish the full signed document on the site. When sharing the campaign, use the website link or a PDF with personal details removed.",
       legal: "Informational advocacy content. It is not individual legal advice.",
+      sourceCode: hasSourceCodeConfig
+        ? {
+          intro: "For transparency, the source code is available on",
+          linkLabel: site.sourceCodePlatform
+        }
+        : null,
       linksLabel: "Pages",
       links: [
         { label: "Home", route: "home" },
@@ -1102,6 +1136,14 @@ export const content = {
           text: "The requirements become clear, testable and reviewable, not opaque internal practices."
         }
       ],
+      sign: hasSignerProviderConfig
+        ? {
+          title: `Sign the petition on ${site.signProvider} platform`,
+          intro: `We no longer collect personal information on this website. To sign, use the official ${site.signProvider} campaign page.`,
+          cta: `Sign on ${site.signProvider} platform`,
+          linkLabel: "Open signing page"
+        }
+        : null,
       privacyNote: "The site shows only the version without personal data. If you share a PDF, remove sensitive details first."
     },
     resources: {
@@ -1270,6 +1312,15 @@ export const content = {
           ]
         }
       ],
+      signProviderNotice: hasSignerProviderConfig
+        ? {
+          title: `${site.signProvider} signing platform`,
+          items: [
+            `When you open the external ${site.signProvider} signing page, cookies and similar technologies on that page are controlled by ${site.signProvider} platform, not by this site.`,
+            `Our privacy policy applies only to this website. For cookie, consent and tracking details on the signing page, check ${site.signProvider}'s policies.`
+          ]
+        }
+        : null,
       gaSection: {
         title: "Google Analytics (optional)",
         items: [

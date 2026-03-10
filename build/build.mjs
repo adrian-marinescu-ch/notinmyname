@@ -96,6 +96,18 @@ const withExternalReferral = (urlValue) => {
     return urlValue;
   }
 };
+const resolvePetitionSignUrl = () => {
+  const configuredUrl = (site.signUrl || "").trim();
+  const configuredProvider = (site.signProvider || "").trim();
+  if (!configuredUrl || !configuredProvider) return "";
+  try {
+    return withExternalReferral(new URL(configuredUrl).toString());
+  } catch {
+    return "";
+  }
+};
+const petitionSignUrl = resolvePetitionSignUrl();
+const hasPetitionSign = Boolean(petitionSignUrl);
 const pagePathForType = (localeData, type) => {
   if (type === "home") return localeData.homePath;
   if (type === "petition") return localeData.petitionPath;
@@ -130,8 +142,7 @@ const renderNav = (localeData, currentType) => {
     let current = "";
     if (item.type === "anchor") {
       const localAnchorOnPage =
-        currentType === "home" ||
-        (currentType === "petition" && item.id === "complaints");
+        currentType === "home";
       href = localAnchorOnPage
         ? `#${item.id}`
         : withBase(`${localeData.homePath}#${item.id}`);
@@ -174,6 +185,9 @@ const renderFooter = (localeData) => {
   const pageLinks = localeData.footer.links.map((item) =>
     `<a href="${escapeHtml(withBase(pagePathForType(localeData, item.route)))}">${escapeHtml(item.label)}</a>`
   ).join("");
+  const sourceCodeNote = localeData.footer.sourceCode
+    ? `<p class="small">${escapeHtml(localeData.footer.sourceCode.intro)} <a href="${escapeHtml(withExternalReferral(site.sourceCodeUrl))}" ${externalLinkAttrs}><strong>${escapeHtml(localeData.footer.sourceCode.linkLabel)}</strong></a>.</p>`
+    : "";
   return `<footer class="footer">
     <div class="shell footer-grid">
       <div class="section-stack">
@@ -181,6 +195,7 @@ const renderFooter = (localeData) => {
         <p>${escapeHtml(localeData.footer.lead)}</p>
         <p class="small">${escapeHtml(localeData.footer.note)}</p>
         <p class="small">${escapeHtml(localeData.footer.legal)}</p>
+        ${sourceCodeNote}
       </div>
       <div class="footer-links">
         <strong>${escapeHtml(localeData.footer.linksLabel)}</strong>
@@ -388,6 +403,12 @@ const renderHead = (localeData, pageType) => {
 
 const renderComplaintSection = (localeData) => {
   const complaints = localeData.home.complaints;
+  const sign = hasPetitionSign ? localeData.petition.sign : null;
+  const signProvider = (site.signProvider || "").trim();
+  const signTitle = sign?.title || "";
+  const signIntro = sign?.intro || "";
+  const signCta = sign?.cta || "";
+  const signLinkLabel = sign?.linkLabel || "";
   const complaintOptions = complaints.targets.map((item) =>
     `<option value="${escapeHtml(item.value)}">${escapeHtml(item.label)}</option>`
   ).join("");
@@ -400,7 +421,7 @@ const renderComplaintSection = (localeData) => {
         <h2>${escapeHtml(complaints.title)}</h2>
         <p>${escapeHtml(complaints.intro)}</p>
       </div>
-      <div class="complaints-grid" data-complaint-generator data-locale="${escapeHtml(localeData.locale)}" data-copied-label="${escapeHtml(localeData.share.copied)}" data-website-url="${escapeHtml(websiteReferenceUrl(localeData))}">
+      <div class="complaints-grid" data-complaint-generator data-locale="${escapeHtml(localeData.locale)}" data-copied-label="${escapeHtml(localeData.share.copied)}" data-website-url="${escapeHtml(websiteReferenceUrl(localeData))}" data-sign-url="${escapeHtml(petitionSignUrl)}" data-sign-provider="${escapeHtml(signProvider)}" data-sign-title="${escapeHtml(signTitle)}" data-sign-intro="${escapeHtml(signIntro)}" data-sign-cta="${escapeHtml(signCta)}" data-sign-link-label="${escapeHtml(signLinkLabel)}">
         <article class="panel" data-reveal>
           <form class="complaint-form" data-complaint-form>
             <div class="field">
@@ -459,6 +480,23 @@ const renderComplaintSection = (localeData) => {
           </div>
         </article>
       </div>
+    </div>
+  </section>`;
+};
+
+const renderPetitionSignSection = (localeData) => {
+  const sign = localeData.petition.sign;
+  if (!hasPetitionSign || !sign) return "";
+  return `<section id="complaints" class="section">
+    <div class="shell">
+      <article class="panel" data-reveal>
+        <h2>${escapeHtml(sign.title)}</h2>
+        <p class="muted">${escapeHtml(sign.intro)}</p>
+        <div class="share-row">
+          <a class="button button-primary" href="${escapeHtml(petitionSignUrl)}" ${externalLinkAttrs}>${escapeHtml(sign.cta)}</a>
+        </div>
+        <a class="inline-link" href="${escapeHtml(petitionSignUrl)}" ${externalLinkAttrs}>${escapeHtml(sign.linkLabel)} <span aria-hidden="true">↗</span></a>
+      </article>
     </div>
   </section>`;
 };
@@ -608,6 +646,17 @@ const renderHome = (localeData) => {
 
 const renderSubHero = (localeData, pageType, pageData) => {
   const sectionLabel = localeData.footer.links.find((item) => item.route === pageType)?.label || pageType;
+  const extraActions = [];
+  if (pageType === "petition" && pageData.hero?.secondaryCta) {
+    extraActions.push(renderButton({
+      label: pageData.hero.secondaryCta.label,
+      href: withBase(pagePathForType(localeData, pageData.hero.secondaryCta.route)),
+      variant: "secondary",
+    }));
+  }
+  if (pageType === "petition" && hasPetitionSign && pageData.sign?.cta) {
+    extraActions.push(`<a class="button button-primary" href="${escapeHtml(petitionSignUrl)}" ${externalLinkAttrs}>${escapeHtml(pageData.sign.cta)}</a>`);
+  }
   const crumbs = [
     `<li><a href="${escapeHtml(withBase(localeData.homePath))}">${escapeHtml(localeData.footer.links[0].label)}</a></li>`,
     `<li><span>${escapeHtml(sectionLabel)}</span></li>`,
@@ -622,6 +671,7 @@ const renderSubHero = (localeData, pageType, pageData) => {
         <div class="share-row">
           <button class="button button-primary" type="button" data-share data-share-title="${escapeHtml(site.brand[localeData.locale])}" data-share-text="${escapeHtml(localeData.share.body)}" data-copied-label="${escapeHtml(localeData.share.copied)}">${escapeHtml(localeData.share.button)}</button>
           <button class="button button-secondary" type="button" data-copy-link data-copied-label="${escapeHtml(localeData.share.copied)}">${escapeHtml(localeData.share.copy)}</button>
+          ${extraActions.join("")}
         </div>
       </div>
     </div>
@@ -637,6 +687,11 @@ const renderPrivacy = (localeData) => {
       <h2>${escapeHtml(section.title)}</h2>
       <ul class="list">${section.items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
     </article>`).join("");
+  const signProviderNotice = page.signProviderNotice ? `
+    <article class="panel" data-reveal>
+      <h2>${escapeHtml(page.signProviderNotice.title)}</h2>
+      <ul class="list">${page.signProviderNotice.items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
+    </article>` : "";
   const analyticsSection = hasGaTracking ? `
     <article class="panel" data-reveal>
       <h2>${escapeHtml(page.gaSection.title)}</h2>
@@ -649,7 +704,7 @@ const renderPrivacy = (localeData) => {
   return `${renderSubHero(localeData, "privacy", page)}
   <section class="section">
     <div class="shell two-col">
-      <div class="section-stack">${baseSections}</div>
+      <div class="section-stack">${baseSections}${signProviderNotice}</div>
       <div class="section-stack">
         ${analyticsSection}
         <article class="panel" data-reveal>
@@ -694,7 +749,7 @@ const renderPetition = (localeData) => {
     </div>
   </section>
 
-  ${renderComplaintSection(localeData)}
+  ${renderPetitionSignSection(localeData)}
 
   <section class="section">
     <div class="shell">

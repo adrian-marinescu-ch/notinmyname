@@ -49,6 +49,12 @@ Variabile de mediu folosite la build:
 - `GA_MEASUREMENT_ID` - opțional, ID Google Analytics (ex: `G-XXXXXXXXXX`)
 - `BASE_PATH` - gol pentru root/domain propriu; `/<repo-name>` pentru GitHub Pages pe subpath
 - `SIGN_URL` - opțional, link extern de semnare
+- `SIGN_PROVIDER` - opțional, numele platformei de semnare afișat în interfață
+- `SOURCE_CODE_URL` - opțional, URL public către repository-ul sursă
+- `SOURCE_CODE_PLATFORM` - opțional, numele platformei sursă afișat în footer (ex: `Github`)
+
+Notă: butoanele de semnare apar doar dacă sunt setate ambele variabile: `SIGN_URL` și `SIGN_PROVIDER`.
+Notă: mențiunea de transparență din footer apare doar dacă sunt setate ambele variabile: `SOURCE_CODE_URL` și `SOURCE_CODE_PLATFORM`.
 
 
 ## Referințe comenzi Docker
@@ -57,12 +63,6 @@ Preview local complet (build + serve):
 
 ```bash
 docker compose up --build
-```
-
-Cu variabile custom:
-
-```bash
-SITE_URL=https://nuinnumelemeu.ro GA_MEASUREMENT_ID= BASE_PATH= SIGN_URL= docker compose up --build
 ```
 
 Export doar `dist` (fără preview):

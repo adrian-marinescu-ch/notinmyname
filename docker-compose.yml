@@ -9,6 +9,9 @@ services:
         GA_MEASUREMENT_ID: ${GA_MEASUREMENT_ID:-}
         BASE_PATH: ${BASE_PATH:-}
         SIGN_URL: ${SIGN_URL:-}
+        SIGN_PROVIDER: ${SIGN_PROVIDER:-}
+        SOURCE_CODE_URL: ${SOURCE_CODE_URL:-}
+        SOURCE_CODE_PLATFORM: ${SOURCE_CODE_PLATFORM:-}
     volumes:
       - ./dist:/output
 
@@ -22,6 +25,9 @@ services:
         GA_MEASUREMENT_ID: ${GA_MEASUREMENT_ID:-}
         BASE_PATH: ${BASE_PATH:-}
         SIGN_URL: ${SIGN_URL:-}
+        SIGN_PROVIDER: ${SIGN_PROVIDER:-}
+        SOURCE_CODE_URL: ${SOURCE_CODE_URL:-}
+        SOURCE_CODE_PLATFORM: ${SOURCE_CODE_PLATFORM:-}
     depends_on:
       dist-export:
         condition: service_completed_successfully

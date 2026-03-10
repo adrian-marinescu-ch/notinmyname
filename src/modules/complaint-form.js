@@ -1,6 +1,60 @@
 const normalizeField=(value="")=>String(value).replace(/\s+/g," ").trim();
 const normalizeRecipients=(value="")=>String(value).split(",").map((item)=>item.trim()).filter(Boolean).join(",");
 const formatDate=(lang)=>new Intl.DateTimeFormat(lang==="ro"?"ro-RO":"en-GB",{year:"numeric",month:"long",day:"numeric"}).format(new Date());
+const normalizeUrl=(value="")=>{
+  const raw=String(value).trim();
+  if(!raw)return"";
+  try{
+    const parsed=new URL(raw,window.location.href);
+    if(!/^https?:$/.test(parsed.protocol))return"";
+    return parsed.toString();
+  }catch{
+    return"";
+  }
+};
+
+const createSignerPanels=({locale,url,provider,title,intro,cta,linkLabel})=>{
+  const infoPanel=document.createElement("article");
+  infoPanel.className="panel is-visible";
+  infoPanel.setAttribute("data-sign-provider-panel","info");
+
+  const heading=document.createElement("h2");
+  heading.textContent=title||(locale==="ro"?`Semnează petiția pe platforma ${provider}`:`Sign the petition on ${provider} platform`);
+
+  const description=document.createElement("p");
+  description.className="muted";
+  description.textContent=intro||(locale==="ro"
+    ?`Nu mai colectăm date personale pe acest site. Pentru semnare, folosește pagina oficială a campaniei ${provider}.`
+    :`We no longer collect personal information on this website. To sign, use the official ${provider} campaign page.`);
+  infoPanel.append(heading,description);
+
+  const actionPanel=document.createElement("article");
+  actionPanel.className="panel is-visible";
+  actionPanel.setAttribute("data-sign-provider-panel","action");
+
+  const actionHeading=document.createElement("h3");
+  actionHeading.textContent=locale==="ro"?"Semnează acum":"Sign now";
+
+  const actionRow=document.createElement("div");
+  actionRow.className="share-row";
+
+  const primaryLink=document.createElement("a");
+  primaryLink.className="button button-primary";
+  primaryLink.href=url;
+  primaryLink.target="_blank";
+  primaryLink.textContent=cta||(locale==="ro"?`Semnează pe ${provider}`:`Sign on ${provider}`);
+
+  const secondaryLink=document.createElement("a");
+  secondaryLink.className="inline-link";
+  secondaryLink.href=url;
+  secondaryLink.target="_blank";
+  secondaryLink.textContent=linkLabel||(locale==="ro"?"Deschide pagina de semnare":"Open signing page");
+  secondaryLink.insertAdjacentHTML("beforeend",' <span aria-hidden="true">↗</span>');
+
+  actionRow.appendChild(primaryLink);
+  actionPanel.append(actionHeading,actionRow,secondaryLink);
+  return{infoPanel,actionPanel};
+};
 
 const buildRomanianTemplate=(salutation,subject)=>(profile,websiteUrl)=>{
   const text=`Data: ${formatDate("ro")}
@@ -103,6 +157,27 @@ const initComplaintForms=({showToast}={})=>{
 
     const websiteUrl=node.getAttribute("data-website-url")||window.location.href;
     const locale=node.getAttribute("data-locale")==="ro"?"ro":"en";
+    const signUrl=normalizeUrl(node.getAttribute("data-sign-url"));
+    const signProvider=normalizeField(node.getAttribute("data-sign-provider"));
+    if(signUrl&&signProvider&&!node.querySelector("[data-sign-provider-panel]")){
+      const signPanels=createSignerPanels({
+        locale,
+        url:signUrl,
+        provider:signProvider,
+        title:normalizeField(node.getAttribute("data-sign-title")),
+        intro:normalizeField(node.getAttribute("data-sign-intro")),
+        cta:normalizeField(node.getAttribute("data-sign-cta")),
+        linkLabel:normalizeField(node.getAttribute("data-sign-link-label")),
+      });
+      const formPanel=form.closest("article");
+      if(formPanel&&formPanel.parentElement===node){
+        node.insertBefore(signPanels.infoPanel,formPanel);
+        node.insertBefore(signPanels.actionPanel,formPanel);
+      }else{
+        node.prepend(signPanels.actionPanel);
+        node.prepend(signPanels.infoPanel);
+      }
+    }
     const previewPlaceholders=locale==="ro"
       ?{
         fullName:"[Nume Prenume]",
