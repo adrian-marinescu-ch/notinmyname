@@ -181,6 +181,30 @@ const renderHeader = (localeData, currentType) => {
   </header>`;
 };
 
+const renderGlobalSignBanner = (localeData) => {
+  if (!hasPetitionSign) return "";
+  const provider = (site.signProvider || "").trim();
+  const isRo = localeData.locale === "ro";
+  const title = isRo
+    ? "Semnarea petiției este deschisă pentru toată lumea"
+    : "Petition signing is open to everyone";
+  const text = isRo
+    ? `Dacă vrei să susții cauza, poți semna acum pe platforma ${provider}.`
+    : `If you want to support the cause, you can sign now on ${provider}.`;
+  const cta = isRo
+    ? `Semnează pe ${provider}`
+    : `Sign on ${provider}`;
+  return `<section class="global-sign-banner">
+    <div class="shell global-sign-banner-row">
+      <div>
+        <strong>${escapeHtml(title)}</strong>
+        <p>${escapeHtml(text)}</p>
+      </div>
+      <a class="button button-primary" href="${escapeHtml(petitionSignUrl)}" ${externalLinkAttrs}>${escapeHtml(cta)}</a>
+    </div>
+  </section>`;
+};
+
 const renderFooter = (localeData) => {
   const pageLinks = localeData.footer.links.map((item) =>
     `<a href="${escapeHtml(withBase(pagePathForType(localeData, item.route)))}">${escapeHtml(item.label)}</a>`
@@ -841,6 +865,7 @@ const renderPage = (localeData, pageType) => {
   <a class="skip-link" href="#content">${escapeHtml(localeData.labels.skipToContent)}</a>
   <div class="progress" id="progress" aria-hidden="true"></div>
   ${renderHeader(localeData, pageType)}
+  ${renderGlobalSignBanner(localeData)}
   <main id="content">
     ${mainContent}
   </main>

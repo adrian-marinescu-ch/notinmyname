@@ -111,6 +111,28 @@ button{font:inherit}
   background:var(--header-bg);
   border-bottom:1px solid rgba(255,255,255,.05);
 }
+.global-sign-banner{
+  border-bottom:1px solid var(--line);
+  background:
+    radial-gradient(circle at 12% -10%, rgba(126,242,200,.2), transparent 34%),
+    linear-gradient(180deg, rgba(99,211,255,.08), rgba(99,211,255,.03));
+}
+.global-sign-banner-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:.9rem;
+  padding:.7rem 0;
+}
+.global-sign-banner strong{
+  display:block;
+  font-size:.98rem;
+}
+.global-sign-banner p{
+  margin:.2rem 0 0;
+  color:var(--muted);
+  font-size:.94rem;
+}
 .header-row{
   display:flex;align-items:center;justify-content:space-between;gap:.6rem;
   min-height:var(--header-h);padding:.6rem 0;
@@ -596,6 +618,12 @@ html[data-theme="light"] .consent-panel{background:rgba(31,52,80,.22)}
   }
   .section{padding:3rem 0}
 }
+@media (max-width: 760px){
+  .global-sign-banner-row{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+}
 @media (min-width: 1080px){
   .hero-grid{grid-template-columns:1.2fr .8fr;gap:1.5rem}
   .two-col{grid-template-columns:1.05fr .95fr;gap:1rem}
@@ -613,7 +641,7 @@ html[data-theme="light"] .consent-panel{background:rgba(31,52,80,.22)}
 @media print{
   :root{color-scheme:light;--text:#0d1623;--muted:#37485d;--bg:#fff;--line:rgba(20,35,60,.16);--line-strong:rgba(20,35,60,.28)}
   body{background:#fff;color:#0d1623}
-  .site-header,.progress,.button-row,.share-row,.footer,.lang-switch,.menu-toggle,.main-nav,.hero-aside,.toast,.screen-only,.consent-root,.a11y-controls,.a11y-hub{display:none!important}
+  .site-header,.global-sign-banner,.progress,.button-row,.share-row,.footer,.lang-switch,.menu-toggle,.main-nav,.hero-aside,.toast,.screen-only,.consent-root,.a11y-controls,.a11y-hub{display:none!important}
   .print-only{display:block}
   .surface,.panel,.cta-card,.card,.compare-panel,.detail-card,.faq,.proposal-item,.resource-item,.timeline-step,.notice,.callout,.metric-card{
     box-shadow:none!important;background:#fff!important;border:1px solid #cfd8e6!important
